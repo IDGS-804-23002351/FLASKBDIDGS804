@@ -9,6 +9,7 @@ from models import Alumno
 
 app = Flask(__name__)
 app.config.from_object(DevelopmentConfig)
+app.secret_key='clave_secreta'
 csrf = CSRFProtect()
 
 @app.errorhandler(404)
@@ -23,10 +24,28 @@ def index():
 	alumno = Alumno.query.all()
 	return render_template("index.html",form=create_form,alumno=alumno)
 
-@app.route("/Alumnos")
+@app.route("/Alumnos",methods=['GET','POST'])
 def Alumnos():
-	return render_template("Alumnos.html")
+	create_form = forms.UserForm(request.form)
+	if request.method == 'POST':
+		alum = Alumno(nombre=create_form.nombre.data,
+						apaterno=create_form.apaterno.data,
+						email=create_form.email.data)
+		db.session.add(alum)
+		db.session.commit()
+		return redirect(url_for('index'))
+	return render_template("Alumnos.html",forms=create_form)
 
+@app.route("/detalles",methods=['GET','POST'])
+def detalles():
+	create_form = forms.UserForm(request.form)
+	if request.method == 'GET':
+		id=request.args.get('id')
+		alum1 = db.session.query(Alumno).filter(Alumno.id==id).first()
+		nombre = alum1.nombre
+		apaterno = alum1.apaterno
+		email = alum1.email
+	return render_template("detalles.html",forms=create_form,id=id,nombre=nombre,apaterno=apaterno,email=email)
 if __name__ == '__main__':
 	csrf.init_app(app)
 	db.init_app(app)
