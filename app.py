@@ -2,6 +2,7 @@ from flask import Flask, render_template, request,redirect,url_for
 from flask import flash
 from flask_wtf.csrf import CSRFProtect
 from config import DevelopmentConfig
+from flask_migrate import Migrate
 from flask import g
 import forms
 from models import db
@@ -9,6 +10,8 @@ from models import Alumno
 
 app = Flask(__name__)
 app.config.from_object(DevelopmentConfig)
+db.init_app(app)
+migrate = Migrate(app,db)
 app.secret_key='clave_secreta'
 csrf = CSRFProtect()
 
@@ -29,8 +32,9 @@ def Alumnos():
 	create_form = forms.UserForm(request.form)
 	if request.method == 'POST':
 		alum = Alumno(nombre=create_form.nombre.data,
-						apaterno=create_form.apaterno.data,
-						email=create_form.email.data)
+						apellidos=create_form.apellidos.data,
+						email=create_form.email.data,
+						telefono=create_form.telefono.data)
 		db.session.add(alum)
 		db.session.commit()
 		return redirect(url_for('index'))
@@ -43,12 +47,57 @@ def detalles():
 		id=request.args.get('id')
 		alum1 = db.session.query(Alumno).filter(Alumno.id==id).first()
 		nombre = alum1.nombre
-		apaterno = alum1.apaterno
+		apellidos = alum1.apellidos
 		email = alum1.email
-	return render_template("detalles.html",forms=create_form,id=id,nombre=nombre,apaterno=apaterno,email=email)
+		telefono = alum1.telefono
+	return render_template("detalles.html",forms=create_form,id=id,nombre=nombre,apellidos=apellidos,email=email,telefono=telefono)
+
+@app.route("/modificar",methods=['GET','POST'])
+def modificar():
+	create_form = forms.UserForm(request.form)
+	if request.method == 'GET':
+		id=request.args.get('id')
+		alum1 = db.session.query(Alumno).filter(Alumno.id==id).first()
+		create_form.id.data = request.args.get('id')
+		create_form.nombre.data = alum1.nombre
+		create_form.apellidos.data = alum1.apellidos
+		create_form.email.data = alum1.email
+		create_form.telefono.data = alum1.telefono
+	if request.method == 'POST':
+		id=request.args.get('id')
+		alum1 = db.session.query(Alumno).filter(Alumno.id==id).first()
+		alum1.id = id
+		alum1.nombre = create_form.nombre.data
+		alum1.apellidos = create_form.apellidos.data
+		alum1.email = create_form.email.data
+		alum1.telefono = create_form.telefono.data
+		db.session.add(alum1)
+		db.session.commit()
+		return redirect(url_for('index'))
+	return render_template("modificar.html",forms=create_form)
+
+@app.route("/eliminar",methods=['GET','POST'])
+def eliminar():
+	create_form = forms.UserForm(request.form)
+	if request.method == 'GET':
+		id=request.args.get('id')
+		alum1 = db.session.query(Alumno).filter(Alumno.id==id).first()
+		create_form.id.data = request.args.get('id')
+		create_form.nombre.data = alum1.nombre
+		create_form.apellidos.data = alum1.apellidos
+		create_form.email.data = alum1.email
+		create_form.telefono.data = alum1.telefono
+	if request.method == 'POST':
+		id=create_form.id.data
+		alum = Alumno.query.get(id)
+		db.session.delete(alum)
+		db.session.commit()
+		return redirect(url_for('index'))
+	return render_template("eliminar.html",forms=create_form)
+
 if __name__ == '__main__':
 	csrf.init_app(app)
-	db.init_app(app)
+	
 	with app.app_context():
 		db.create_all()
 	app.run(debug=True)
