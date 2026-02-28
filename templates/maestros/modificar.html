@@ -1,0 +1,27 @@
+{% extends "layout.html" %}
+{% block container %}
+
+{% import "_macros.html" as macros %}
+<form method="POST" class="max-w-md mx-auto">
+    {{forms.csrf_token}}
+    <input type="hidden" name="csrf_token" value="{{csrf_token()}}"/>
+  <div class="relative z-0 w-full mb-5 group">
+    {{macros.camposNuevos(forms.matricula,class="block py-2.5 px-0 w-full text-sm text-heading bg-transparent border-0 border-b-2 border-default-medium appearance-none focus:outline-none focus:ring-0 focus:border-brand peer")}}
+  </div>
+  <div class="relative z-0 w-full mb-5 group">
+    {{macros.camposNuevos(forms.nombre,class="block py-2.5 px-0 w-full text-sm text-heading bg-transparent border-0 border-b-2 border-default-medium appearance-none focus:outline-none focus:ring-0 focus:border-brand peer")}}
+  </div>
+  <div class="relative z-0 w-full mb-5 group">
+    {{macros.camposNuevos(forms.apellidos,class="block py-2.5 px-0 w-full text-sm text-heading bg-transparent border-0 border-b-2 border-default-medium appearance-none focus:outline-none focus:ring-0 focus:border-brand peer")}}
+  </div>
+  <div class="relative z-0 w-full mb-5 group">
+      {{macros.camposNuevos(forms.especialidad,class="block py-2.5 px-0 w-full text-sm text-heading bg-transparent border-0 border-b-2 border-default-medium appearance-none focus:outline-none focus:ring-0 focus:border-brand peer")}}
+  </div>
+  <div class="relative z-0 w-full mb-5 group">
+      {{macros.camposNuevos(forms.email,class="block py-2.5 px-0 w-full text-sm text-heading bg-transparent border-0 border-b-2 border-default-medium appearance-none focus:outline-none focus:ring-0 focus:border-brand peer")}}
+  </div>
+  <button type="submit" class="text-white bg-brand box-border border border-transparent hover:bg-brand-strong focus:ring-4 focus:ring-brand-medium shadow-xs font-medium leading-5 rounded-base text-sm px-4 py-2.5 focus:outline-none">Modificar</button>
+  <a href="{{ url_for('maestros.index') }}" class="inline-flex items-center text-body bg-neutral-secondary-medium box-border border border-default-medium hover:bg-neutral-tertiary-medium hover:text-heading focus:ring-4 focus:ring-neutral-tertiary shadow-xs font-medium leading-5 rounded-base text-sm px-4 py-2.5 focus:outline-none">Regresar</a>
+</form>
+
+{% endblock %}
