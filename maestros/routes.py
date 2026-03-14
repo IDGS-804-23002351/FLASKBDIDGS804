@@ -11,8 +11,8 @@ from models import Alumno, Maestros
 
 
 @maestros.route("/maestros",methods=['GET','POST'])
-@maestros.route("/index")
-def index():
+@maestros.route("/Maestro")
+def indexMaestro():
     create_form = forms.MaestroForm(request.form)
     maestros = Maestros.query.all()
     return render_template("maestros/listadoMaes.html",form = create_form, maestros= maestros)
@@ -29,8 +29,9 @@ def Maestro():
         )
         db.session.add(maes)
         db.session.commit()
-        return redirect(url_for('maestros.index'))
+        return redirect(url_for('maestros.indexMaestro'))
     return render_template("maestros/Maestro.html",forms = create_form)
+
 @maestros.route("/detalles",methods=['GET','POST'])
 def detalles():
 	create_form = forms.MaestroForm(request.form)
@@ -60,10 +61,9 @@ def modificar():
 		maes1.nombre = create_form.nombre.data
 		maes1.apellidos = create_form.apellidos.data
 		maes1.email = create_form.email.data
-		maes1.email = create_form.email.data
 		db.session.add(maes1)
 		db.session.commit()
-		return redirect(url_for('maestros.index'))
+		return redirect(url_for('maestros.indexMaestro'))
 	return render_template("maestros/modificar.html",forms=create_form)
 
 @maestros.route("/eliminar",methods=['GET','POST'])
@@ -82,7 +82,7 @@ def eliminar():
 		alum = Maestros.query.get(matricula)
 		db.session.delete(alum)
 		db.session.commit()
-		return redirect(url_for('maestros.index'))
+		return redirect(url_for('maestros.indexMaestro'))
 	return render_template("maestros/eliminar.html",forms=create_form)
 
 @maestros.route('/perfil/<nombre>')

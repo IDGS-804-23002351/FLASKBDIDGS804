@@ -1,0 +1,54 @@
+{% extends "layout.html" %}
+{% block container %}
+{% import "_macros.html" as macros %}
+
+<div class="p-6">
+    <div class="bg-neutral-primary-soft block max-w-sm border border-default rounded-base shadow-xs mb-10">
+        <div class="p-6 text-center">
+            <form action="{{ url_for('consultas.consultaCursos') }}" method="POST" novalidate>
+                {{ forms.csrf_token }}
+                
+                <h5 class="mt-3 mb-6 text-2xl font-semibold tracking-tight text-heading">Filtrar por Curso:</h5>
+                
+                <div class="relative z-0 w-full mb-5 group">
+                    {{ macros.camposNuevos(forms.curso_id, class="block py-2.5 px-0 w-full text-sm text-heading bg-transparent border-0 border-b-2 border-default-medium appearance-none focus:outline-none focus:ring-0 focus:border-brand peer") }}
+                </div>
+
+                <button type="submit" class="inline-flex items-center text-white bg-brand hover:bg-brand-strong focus:ring-4 font-medium rounded-base text-sm px-4 py-2.5">
+                    Ver Alumnos Inscritos
+                    <svg class="w-4 h-4 ms-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
+        <table class="w-full text-sm text-left text-gray-500">
+            <thead class="text-xs text-gray-700 uppercase bg-gray-50">
+                <tr>
+                    <th class="px-6 py-3">Nombre Completo</th>
+                    <th class="px-6 py-3">Correo Electrónico</th>
+                    <th class="px-6 py-3">Teléfono</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for alum in alumnos %}
+                <tr class="bg-white border-b hover:bg-gray-50">
+                    <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
+                        {{ alum.nombre }} {{ alum.apellidos }}
+                    </th>
+                    <td class="px-6 py-4">{{ alum.email }}</td>
+                    <td class="px-6 py-4">{{ alum.telefono }}</td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="3" class="px-6 py-8 text-center text-gray-400">
+                        Selecciona un curso para ver a los alumnos inscritos.
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
